@@ -20,13 +20,37 @@ class InstallData implements InstallDataInterface
     private $eavSetupFactory;
 
     /**
+     * Resource setup
+     *
+     * @var ConfigInterface
+     */
+    private $_resource;
+
+    /**
+     * Get Scope Config Data
+     *
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
+     * Get eavConfig Data
+     *
+     * @var Magento\Eav\Model\Config
+     */
+    private $eavConfig;
+
+    /**
      * Init
      *
      * @param EavSetupFactory $eavSetupFactory
      */
-    public function __construct(EavSetupFactory $eavSetupFactory)
+    public function __construct(EavSetupFactory $eavSetupFactory,\Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig, \Magento\Framework\App\Config\ConfigResource\ConfigInterface $resource, \Magento\Eav\Model\Config $eavConfig)
     {
         $this->eavSetupFactory = $eavSetupFactory;
+        $this->_resource = $resource;
+        $this->eavConfig = $eavConfig;
+        $this->scopeConfig = $scopeConfig;
     }
 
     /**
@@ -37,14 +61,14 @@ class InstallData implements InstallDataInterface
     {
         /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
+        $attribute = $this->getAttribute();
 
         /**
          * Add attributes to the eav/attribute
          */
-
         $eavSetup->addAttribute(
             \Magento\Catalog\Model\Product::ENTITY,
-            'handle_display',/* Custom Attribute Code */
+            $attribute,/* Custom Attribute Code */
             [
                 'group' => 'Product Details',/* Group name in which you want to display your custom attribute */
                 'type' => 'int',/* Data type in which formate your value save in database*/
@@ -68,5 +92,35 @@ class InstallData implements InstallDataInterface
                 'unique' => false
             ]
         );
+    }
+
+    public function getAttribute()
+    {
+        $possible_attributes = array('handle_display','productlist_handle_display','ecommistry_handle_display');
+        $scopeConfig = $this->scopeConfig->getValue('ecommistry/productlist/attribute', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+
+        foreach($possible_attributes as $possible_attribute)
+        {
+            $attr = $this->eavConfig->getAttribute(\Magento\Catalog\Model\Product::ENTITY, $possible_attribute);
+            if(empty($attr) && !empty($scopeConfig)) {
+                $attribute = $scopeConfig;
+                break;
+            }
+
+            if(empty($attr) && empty($scopeConfig))
+            {
+                $attribute = $possible_attribute;
+                $this->_resource->saveConfig('ecommistry/productlist/attribute', $attribute, 'default', 0);
+                break;
+            } 
+
+            if(!empty($attr) && !empty($scopeConfig) && $possible_attribute == $scopeConfig) {
+                $attribute = $possible_attribute;
+                break;
+            } 
+
+        }
+
+        return $attribute;
     }
 }

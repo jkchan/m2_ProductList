@@ -98,23 +98,24 @@ class InstallData implements InstallDataInterface
     {
         $possible_attributes = array('handle_display','productlist_handle_display','ecommistry_handle_display');
         $scopeConfig = $this->scopeConfig->getValue('ecommistry/productlist/attribute', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-
+        
         foreach($possible_attributes as $possible_attribute)
         {
             $attr = $this->eavConfig->getAttribute(\Magento\Catalog\Model\Product::ENTITY, $possible_attribute);
-            if(empty($attr) && !empty($scopeConfig)) {
+            
+            if(empty($attr->getId()) && !empty($scopeConfig)) {
                 $attribute = $scopeConfig;
                 break;
             }
 
-            if(empty($attr) && empty($scopeConfig))
+            if(empty($attr->getId()) && empty($scopeConfig))
             {
                 $attribute = $possible_attribute;
                 $this->_resource->saveConfig('ecommistry/productlist/attribute', $attribute, 'default', 0);
                 break;
             } 
 
-            if(!empty($attr) && !empty($scopeConfig) && $possible_attribute == $scopeConfig) {
+            if(!empty($attr->getId()) && !empty($scopeConfig) && $possible_attribute == $scopeConfig) {
                 $attribute = $possible_attribute;
                 break;
             } 

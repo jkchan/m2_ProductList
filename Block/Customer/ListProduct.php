@@ -3,6 +3,13 @@ namespace Ecommistry\ProductList\Block\Customer;
 
 class ListProduct extends \Magento\Catalog\Block\Product\ListProduct
 {
+	/**
+     * Default toolbar block name
+     *
+     * @var string
+     */
+    protected $_defaultToolbarBlock = 'Ecommistry\ProductList\Block\Product\ProductList\Toolbar';
+
     /**
      * Get Scope Config Data
      *
@@ -11,11 +18,19 @@ class ListProduct extends \Magento\Catalog\Block\Product\ListProduct
     private $scopeConfig;
 
     /**
+     * Get Product Collection
+     *
+     * @var ProductCollection Factory
+     */
+    private $_productCollectionFactory;
+
+    /**
      * @param Context $context
      * @param \Magento\Framework\Data\Helper\PostHelper $postDataHelper
      * @param \Magento\Catalog\Model\Layer\Resolver $layerResolver
      * @param CategoryRepositoryInterface $categoryRepository
      * @param \Magento\Framework\Url\Helper\Data $urlHelper
+     * @param \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory
      * @param array $data
      */
     public function __construct(
@@ -24,9 +39,11 @@ class ListProduct extends \Magento\Catalog\Block\Product\ListProduct
         \Magento\Catalog\Model\Layer\Resolver $layerResolver,
         \Magento\Catalog\Api\CategoryRepositoryInterface $categoryRepository,
         \Magento\Framework\Url\Helper\Data $urlHelper,
+        \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $productCollectionFactory,
         array $data = []
     ) {
         $this->scopeConfig = $context->getScopeConfig();
+        $this->_productCollectionFactory = $productCollectionFactory; 
         parent::__construct(
             $context,
             $postDataHelper,
@@ -45,57 +62,16 @@ class ListProduct extends \Magento\Catalog\Block\Product\ListProduct
     protected function _getProductCollection()
     {
         if ($this->_productCollection === null) {
-            $layer = $this->getLayer();
-
-            $attributeUsed = $this->scopeConfig->getValue('ecommistry/productlist/attribute', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-            $this->_productCollection = $layer->getProductCollection()->addAttributeToSelect($attributeUsed)->addAttributeToFilter($attributeUsed,['eq'=>1]);
             
+            $collection = $this->_productCollectionFactory->create();
+        	$collection->addAttributeToSelect('*');
+
+        	$attributeUsed = $this->scopeConfig->getValue('ecommistry/productlist/attribute', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        	$collection->addAttributeToFilter($attributeUsed,['eq'=>1]);
+
+        	$this->_productCollection = $collection;   
         }
 
         return $this->_productCollection;
-    }
-
-    /**
-     * Need use as _prepareLayout - but problem in declaring collection from
-     * another block (was problem with search result)
-     * @return $this
-     */
-    protected function _beforeToHtml()
-    {
-        $toolbar = $this->getToolbarBlock();
-
-        // called prepare sortable parameters
-        $collection = $this->_getProductCollection();
-        
-        // use sortable parameters
-        $orders = $this->getAvailableOrders();
-        if ($orders) {
-            $toolbar->setAvailableOrders($orders);
-        }
-        $sort = $this->getSortBy();
-        if ($sort) {
-            $toolbar->setDefaultOrder($sort);
-        }
-        $dir = $this->getDefaultDirection();
-        if ($dir) {
-            $toolbar->setDefaultDirection($dir);
-        }
-        $modes = $this->getModes();
-        if ($modes) {
-            $toolbar->setModes($modes);
-        }
-
-        // set collection to toolbar and apply sort
-        $toolbar->setCollection($collection);
-
-        $this->setChild('toolbar', $toolbar);
-        $this->_eventManager->dispatch(
-            'catalog_block_product_list_collection',
-            ['collection' => $this->_getProductCollection()]
-        );
-
-        $this->_getProductCollection()->load();
-
-        return parent::_beforeToHtml();
     }
 }

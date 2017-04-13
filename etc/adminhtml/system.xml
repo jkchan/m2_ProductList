@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+ 
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../Backend/etc/system_file.xsd">
+    <system>
+        <tab id="ecommistry" translate="label" sortOrder="1">
+            <label>Ecommistry</label>
+        </tab>
+        <section id="productlist" translate="label" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Product Listing</label>
+            <tab>ecommistry</tab>
+            <resource>Ecommistry_ProductList::system_config</resource>
+            <group id="general" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Settings</label>
+                <field id="enable_in_frontend" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable in frontend</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="product_limit" translate="label comment" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Product Limit</label>
+                    <comment>Set a limit to how many products will show. (leave blank to show all)</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

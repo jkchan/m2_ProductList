@@ -59,6 +59,10 @@ class InstallData implements InstallDataInterface
      */
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {
+
+        $this->_resource->saveConfig('productlist/general/enable_in_frontend', 1, 'default', 0);
+        $this->_resource->saveConfig('productlist/general/product_limit', 30, 'default', 0);
+
         /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $setup]);
         $attribute = $this->getAttribute();

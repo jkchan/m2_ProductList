@@ -74,4 +74,9 @@ class ListProduct extends \Magento\Catalog\Block\Product\ListProduct
 
         return $this->_productCollection;
     }
+
+    public function getLimit()
+    {
+    	return (int)$this->scopeConfig->getValue('productlist/general/product_limit', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+    }
 }

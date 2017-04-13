@@ -5,7 +5,7 @@
         <productlist>
             <general>
                 <enable_in_frontend>1</enable_in_frontend>
-                <title>Ecommistry ProductList</title>
+                <product_limit>20</product_limit>
             </general>
         </productlist>
     </default>

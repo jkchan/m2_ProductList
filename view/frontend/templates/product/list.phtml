@@ -10,13 +10,16 @@ use Magento\Framework\App\Action\Action;
  */
 ?>
 <?php
+$limitSet = $block->getLimit();
 $_productCollection = $block->getLoadedProductCollection();
 $_helper = $this->helper('Magento\Catalog\Helper\Output');
 ?>
 <?php if (!$_productCollection->count()): ?>
     <div class="message info empty"><div><?php /* @escapeNotVerified */ echo __('We can\'t find products matching the selection.') ?></div></div>
 <?php else: ?>
-    <?php echo $block->getToolbarHtml() ?>
+    <?php 
+        echo $block->getToolbarHtml(); 
+    ?>
     <?php echo $block->getAdditionalHtml() ?>
     <?php
     if ($block->getMode() == 'grid') {
@@ -110,7 +113,10 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
             <?php endforeach; ?>
         </ol>
     </div>
-    <?php echo $block->getToolbarHtml() ?>
+    <?php 
+    if(!$limitSet)
+        echo $block->getToolbarHtml(); 
+    ?>
     <?php if (!$block->isRedirectToCartEnabled()) : ?>
         <script type="text/x-magento-init">
         {

@@ -4,13 +4,6 @@ namespace Ecommistry\ProductList\Block\Customer;
 class ListProduct extends \Magento\Catalog\Block\Product\ListProduct
 {
 	/**
-     * Default toolbar block name
-     *
-     * @var string
-     */
-    protected $_defaultToolbarBlock = 'Ecommistry\ProductList\Block\Product\ProductList\Toolbar';
-
-    /**
      * Get Scope Config Data
      *
      * @var ScopeConfigInterface

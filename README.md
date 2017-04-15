@@ -28,6 +28,14 @@ Customer Product Listing Page:
 	- You can add to cart from the page
 	- Shows how many items are on the page
 
+Admin Product Listing Configutation
+	- Login to the admin page
+	- Go to Stores > Configuration > Ecommistry >ProductList
+	- You can enable and disable the plugin from here
+	- You can change the limit from this configuration
+	- Limit is set to blank or 0 will display all the products
+	- Limit is set to any number greater than 0 will display the number of products.
+
 ##Installation
 
 	1. Download or Clone the Files inside app/code/local/Ecommistry/ or if you prefer other Vendor Names app/code/local/VendorName/
@@ -38,6 +46,15 @@ Customer Product Listing Page:
 	6. Run setup:upgrade, clear cache, reindex
 	7. Check if the attribute is installed.
 	8. Check if the module is successfully installed.
+
+##Sample Data
+
+	URL:http://139.59.246.60/
+	*Use the sample account on the Login Page
+
+	Admin URL:http://139.59.246.60/index.php/admin
+	Username: admin
+	Password: passw0rd
 
 Happy Coding!
 
